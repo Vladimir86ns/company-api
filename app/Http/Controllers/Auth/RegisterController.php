@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use App\Http\Requests\ValidateCreateUser;
+use App\Validators\UserValidator;
+use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
 {
@@ -31,13 +35,20 @@ class RegisterController extends Controller
     protected $redirectTo = '/home';
 
     /**
+     * @var \App\Validators\UserValidator
+     */
+    protected $validator;
+
+    /**
      * Create a new controller instance.
      *
+     * @param UserValidator  userValidator
      * @return void
      */
-    public function __construct()
+    public function __construct(UserValidator $userValidator)
     {
         $this->middleware('guest');
+        $this->validator = $userValidator;
     }
 
     /**
@@ -68,5 +79,37 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    /**
+     * Create a new user & account.
+     *
+     * @param  array  $data
+     * @return \App\User
+     */
+    protected function createUser(Request $request)
+    {
+        $inputs = $request->all();
+        $errors = $this->validator->userCreateValidator($inputs, new ValidateCreateUser());
+
+        if ($errors) {
+            return response($errors, Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $user = User::create([
+            'name' => $inputs['name'],
+            'email' => $inputs['email'],
+            'password' => Hash::make($inputs['password']),
+        ]);
+
+        $user->account()->create();
+
+        // TODO make transformer.
+        return response([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'account_id' => $user->account->id
+        ], Response::HTTP_OK);
     }
 }
