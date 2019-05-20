@@ -82,7 +82,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * Create a new user.
+     * Create a new user & account.
      *
      * @param  array  $data
      * @return \App\User
@@ -96,10 +96,20 @@ class RegisterController extends Controller
             return response($errors, Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        return User::create([
+        $user = User::create([
             'name' => $inputs['name'],
             'email' => $inputs['email'],
             'password' => Hash::make($inputs['password']),
         ]);
+
+        $user->account()->create();
+
+        // TODO make transformer.
+        return response([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'account_id' => $user->account->id
+        ], Response::HTTP_OK);
     }
 }
