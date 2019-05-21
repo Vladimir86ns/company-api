@@ -14,7 +14,7 @@ class UserValidator
      * @param $validator
      * @return mixed
      */
-    public function userCreateValidator(array $data, $validator)
+    public function userValidator(array $data, $validator)
     {
         return $this->validateData($data, $validator);
     }

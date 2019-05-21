@@ -25,6 +25,7 @@ $api->version('v1', function ($api) {
         // USER
         $api->group(['prefix' => 'user'], function ($api) {
             $api->post('create', 'Auth\RegisterController@createUser');
+            $api->get('login', 'Auth\LoginController@login');
         });
     });
 });

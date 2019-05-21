@@ -42,7 +42,7 @@ class RegisterController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @param UserValidator  userValidator
+     * @param UserValidator  $userValidator
      * @return void
      */
     public function __construct(UserValidator $userValidator)
@@ -90,7 +90,7 @@ class RegisterController extends Controller
     protected function createUser(Request $request)
     {
         $inputs = $request->all();
-        $errors = $this->validator->userCreateValidator($inputs, new ValidateCreateUser());
+        $errors = $this->validator->userValidator($inputs, new ValidateCreateUser());
 
         if ($errors) {
             return response($errors, Response::HTTP_NOT_ACCEPTABLE);

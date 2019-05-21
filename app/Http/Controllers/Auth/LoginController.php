@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\ValidateLoginUser;
+use App\Validators\UserValidator;
 
 class LoginController extends Controller
 {
@@ -28,12 +33,50 @@ class LoginController extends Controller
     protected $redirectTo = '/home';
 
     /**
+     * @var \App\Validators\UserValidator
+     */
+    protected $validator;
+
+    /**
      * Create a new controller instance.
      *
+     * @param UserValidator  $userValidator
      * @return void
      */
-    public function __construct()
+    public function __construct(UserValidator $userValidator)
     {
         $this->middleware('guest')->except('logout');
+        $this->validator = $userValidator;
+    }
+
+    /**
+     * Handle an authentication attempt.
+     *
+     * @param  \Illuminate\Http\Request $request
+     *
+     * @return Response
+     */
+    public function login(Request $request)
+    {
+        $inputs = $request->only('email', 'password');
+        $errors = $this->validator->userValidator($inputs, new ValidateLoginUser());
+
+        if ($errors) {
+            return response($errors, Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        if (Auth::attempt($inputs)) {
+            $user = Auth::user();
+
+            // TODO return from transformer
+            return response([
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'account_id' => $user->account->id
+            ], Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        return response([], Response::HTTP_NOT_FOUND);
     }
 }
