@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ValidateCreateUser;
 use App\Validators\UserValidator;
 use Symfony\Component\HttpFoundation\Response;
+use JWTAuth;
 
 class RegisterController extends Controller
 {
@@ -103,13 +104,15 @@ class RegisterController extends Controller
         ]);
 
         $user->account()->create();
+        $token = JWTAuth::fromUser($user);
 
         // TODO make transformer.
         return response([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'account_id' => $user->account->id
+            'account_id' => $user->account->id,
+            'token' => $token
         ], Response::HTTP_OK);
     }
 }
