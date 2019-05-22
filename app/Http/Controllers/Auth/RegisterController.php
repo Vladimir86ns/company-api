@@ -98,18 +98,16 @@ class RegisterController extends Controller
         }
 
         $user = User::create([
-            'name' => $inputs['name'],
             'email' => $inputs['email'],
             'password' => Hash::make($inputs['password']),
         ]);
 
-        $user->account()->create();
+        $user->account()->create(['name' => $inputs['name']]);
         $token = JWTAuth::fromUser($user);
 
         // TODO make transformer.
         return response([
             'id' => $user->id,
-            'name' => $user->name,
             'email' => $user->email,
             'account_id' => $user->account->id,
             'token' => $token
