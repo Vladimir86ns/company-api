@@ -66,7 +66,7 @@ class LoginController extends Controller
             return response($errors, Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        $token = JWTAuth::attempt($inputs, ['exp' => 1000]);
+        $token = JWTAuth::attempt($inputs);
 
         if ($token) {
             $user = JWTAuth::parseToken()->authenticate();
