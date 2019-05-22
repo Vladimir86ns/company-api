@@ -20,11 +20,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 $api->version('v1', function ($api) {
-    $api->group(['namespace' => 'App\Http\Controllers', 'middleware' => 'api'], function (Router $api) {
+    $api->post('user/create', 'App\Http\Controllers\Auth\RegisterController@createUser');
+
+    $api->group(['namespace' => 'App\Http\Controllers', 'middleware' => 'jwt.verify'], function (Router $api) {
 
         // USER
         $api->group(['prefix' => 'user'], function ($api) {
-            $api->post('create', 'Auth\RegisterController@createUser');
             $api->get('login', 'Auth\LoginController@login');
         });
     });

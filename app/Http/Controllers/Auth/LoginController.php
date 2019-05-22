@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\ValidateLoginUser;
 use App\Validators\UserValidator;
+use JWTAuth;
 
 class LoginController extends Controller
 {
@@ -30,7 +31,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    // protected $redirectTo = '/home';
 
     /**
      * @var \App\Validators\UserValidator
@@ -45,7 +46,7 @@ class LoginController extends Controller
      */
     public function __construct(UserValidator $userValidator)
     {
-        $this->middleware('guest')->except('logout');
+        // $this->middleware('guest')->except('logout');
         $this->validator = $userValidator;
     }
 
@@ -65,15 +66,17 @@ class LoginController extends Controller
             return response($errors, Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        if (Auth::attempt($inputs)) {
-            $user = Auth::user();
+        $token = JWTAuth::attempt($inputs, ['exp' => 1000]);
 
+        if ($token) {
+            $user = JWTAuth::parseToken()->authenticate();
             // TODO return from transformer
             return response([
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'account_id' => $user->account->id
+                'account_id' => $user->account->id,
+                'token' => $token
             ], Response::HTTP_NOT_ACCEPTABLE);
         }
 
