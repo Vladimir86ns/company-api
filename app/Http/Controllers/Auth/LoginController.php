@@ -66,20 +66,17 @@ class LoginController extends Controller
             return response($errors, Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        $token = JWTAuth::attempt($inputs);
-
-        if ($token) {
-            $user = JWTAuth::parseToken()->authenticate();
+        if (Auth::attempt($inputs)) {
+            $user = Auth::user();
             // TODO return from transformer
             return response([
                 'id' => $user->id,
-                'name' => $user->name,
                 'email' => $user->email,
                 'account_id' => $user->account->id,
-                'token' => $token
-            ], Response::HTTP_NOT_ACCEPTABLE);
+                'token' => JWTAuth::fromUser($user)
+            ], Response::HTTP_OK);
         }
 
-        return response([], Response::HTTP_NOT_FOUND);
+        return abort(Response::HTTP_NOT_FOUND, 'Credentials are not correct!');
     }
 }
