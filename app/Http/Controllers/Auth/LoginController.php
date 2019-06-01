@@ -72,6 +72,13 @@ class LoginController extends Controller
             return response([
                 'id' => $user->id,
                 'email' => $user->email,
+                'first_name' => $user->userInfo->first_name,
+                'last_name' => $user->userInfo->last_name,
+                'country' => $user->userInfo->country,
+                'city' => $user->userInfo->city,
+                'address' => $user->userInfo->address,
+                'phone_number' => $user->userInfo->phone_number,
+                'mobile_phone' => $user->userInfo->mobile_phone,
                 'account_id' => $user->account->id,
                 'company_settings_done' => $user->account->company_settings_done,
                 'user_settings_done' => $user->account->user_settings_done,
