@@ -13,7 +13,19 @@ class Account extends Model
      */
     protected $fillable = [
         'user_id',
-        'name'
+        'name',
+        'company_settings_done',
+        'user_settings_done'
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'company_settings_done' => 'boolean',
+        'user_settings_done' => 'boolean',
     ];
 
     /**

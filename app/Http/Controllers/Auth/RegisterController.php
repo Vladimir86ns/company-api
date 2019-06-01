@@ -110,6 +110,8 @@ class RegisterController extends Controller
             'id' => $user->id,
             'email' => $user->email,
             'account_id' => $user->account->id,
+            'company_settings_done' => $user->account->company_settings_done,
+            'user_settings_done' => $user->account->user_settings_done,
             'token' => $token
         ], Response::HTTP_OK);
     }
