@@ -103,6 +103,7 @@ class RegisterController extends Controller
         ]);
 
         $user->account()->create(['name' => $inputs['name']]);
+        $user->userInfo()->create([]);
         $token = JWTAuth::fromUser($user);
 
         // TODO make transformer.
