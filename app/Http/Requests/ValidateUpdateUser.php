@@ -40,7 +40,7 @@ class ValidateUpdateUser extends FormRequest
             'email' => 'required|unique:users,email,' . $this->attributes['user_id'],
             'country' => 'required|max:100',
             'city' => 'required|max:100',
-            'address' => 'max:100',
+            'address' => 'required|max:100',
             'phone_number' => 'max:20',
             'mobile_phone' => 'max:20',
             'user_id' => 'required|integer',
