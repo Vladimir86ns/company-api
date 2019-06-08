@@ -22,7 +22,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 $api->version('v1', function ($api) {
 
     $api->group(['namespace' => 'App\Http\Controllers'], function (Router $api) {
-        // USER
         $api->group(['prefix' => 'user'], function ($api) {
             $api->get('login', 'Auth\LoginController@login');
             $api->post('create', 'Auth\RegisterController@createUser');
@@ -34,6 +33,12 @@ $api->version('v1', function ($api) {
         $api->group(['prefix' => 'user'], function ($api) {
             $api->get('/{id}/{accountId}', 'UserController@getUser');
             $api->post('update', 'UserController@update');
+        });
+
+        // COMPANY
+        $api->group(['prefix' => 'company'], function ($api) {
+            $api->get('/{id}/{accountId}', 'CompanyController@getCompanyByIdAndAccountId');
+            $api->post('create', 'CompanyController@create');
         });
     });
 });

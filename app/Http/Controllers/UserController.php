@@ -37,6 +37,31 @@ class UserController extends Controller
     }
 
     /**
+     * Get user.
+     *
+     * @param string $id User id.
+     * @param string $accountId Account Id.
+     */
+    public function getUser(string $id, string $accountId)
+    {
+        $user = $this->validator->getAndValidateUserAndAccountId($id, $accountId);
+
+        // TODO return from transformer
+        return response([
+            'email' => $user->email,
+            'first_name' => $user->userInfo->first_name,
+            'last_name' => $user->userInfo->last_name,
+            'country' => $user->userInfo->country,
+            'city' => $user->userInfo->city,
+            'address' => $user->userInfo->address,
+            'phone_number' => $user->userInfo->phone_number,
+            'mobile_phone' => $user->userInfo->mobile_phone,
+            'company_settings_done' => $user->account->company_settings_done,
+            'user_settings_done' => $user->account->user_settings_done,
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Update user.
      *
      * @param Request $request
@@ -56,35 +81,9 @@ class UserController extends Controller
         try {
             $user = $this->service->updateUser($user, $inputs);
         } catch (\Exception $e) {
-            // TODO change status code.
             \Log::info($e->getMessage());
             abort(Response::HTTP_NOT_ACCEPTABLE, 'Something went wrong, try again later!');
         }
-
-        // TODO return from transformer
-        return response([
-            'email' => $user->email,
-            'first_name' => $user->userInfo->first_name,
-            'last_name' => $user->userInfo->last_name,
-            'country' => $user->userInfo->country,
-            'city' => $user->userInfo->city,
-            'address' => $user->userInfo->address,
-            'phone_number' => $user->userInfo->phone_number,
-            'mobile_phone' => $user->userInfo->mobile_phone,
-            'company_settings_done' => $user->account->company_settings_done,
-            'user_settings_done' => $user->account->user_settings_done,
-        ], Response::HTTP_OK);
-    }
-
-    /**
-     * Get user.
-     *
-     * @param string $id User id.
-     * @param string $accountId Account Id.
-     */
-    public function getUser(string $id, string $accountId)
-    {
-        $user = $this->validator->getAndValidateUserAndAccountId($id, $accountId);
 
         // TODO return from transformer
         return response([
