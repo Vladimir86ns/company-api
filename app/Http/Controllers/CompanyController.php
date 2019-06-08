@@ -9,6 +9,11 @@ use App\Validators\UserValidator;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\Company\CompanyService;
 
+/**
+ * Class CompanyController
+ *
+ * @package App\Http\Controllers
+ */
 class CompanyController extends Controller
 {
     /**
@@ -27,27 +32,29 @@ class CompanyController extends Controller
     protected $validator;
 
     /**
-     * Create a new controller instance.
+     * CompanyController constructor.
      *
      * @param CompanyValidator $companyValidator
-     * @return void
+     * @param UserValidator    $userValidator
+     * @param CompanyService   $companyService
      */
     public function __construct(
-        CompanyValidator $validator,
+        CompanyValidator $companyValidator,
         UserValidator $userValidator,
         CompanyService $companyService
     ) {
-        $this->validator = $validator;
+        $this->validator = $companyValidator;
         $this->userValidator = $userValidator;
         $this->service = $companyService;
     }
 
     /**
-     * Get company.
+     * Get company by id and account id.
      *
-     * @param string $id Company ID.
-     * @param string $accountId Account ID.
-     * @return void
+     * @param string $id
+     * @param string $accountId
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function getCompanyByIdAndAccountId(string $id, string $accountId)
     {

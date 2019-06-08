@@ -9,6 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Services\User\UserService;
 use App\User;
 
+/**
+ * Class UserController
+ *
+ * @package App\Http\Controllers
+ */
 class UserController extends Controller
 {
     /**
@@ -36,11 +41,14 @@ class UserController extends Controller
         $this->service = $userService;
     }
 
+
     /**
      * Get user.
      *
-     * @param string $id User id.
-     * @param string $accountId Account Id.
+     * @param string $id
+     * @param string $accountId
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function getUser(string $id, string $accountId)
     {
@@ -61,11 +69,13 @@ class UserController extends Controller
         ], Response::HTTP_OK);
     }
 
+
     /**
      * Update user.
      *
      * @param Request $request
-     * @return void
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function update(Request $request)
     {

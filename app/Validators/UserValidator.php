@@ -27,10 +27,11 @@ class UserValidator
     }
 
     /**
-     * Validate and return user if exist.
+     * Validate user exist, account is the same, and return user.
      *
      * @param string $userId
-     * @return User;
+     * @param string $accountId
+     * @return User|void
      */
     public function getAndValidateUserAndAccountId(string $userId, string $accountId)
     {
