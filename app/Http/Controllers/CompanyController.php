@@ -77,7 +77,7 @@ class CompanyController extends Controller
             return response($errors, Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        $this->userValidator->getAndValidateUserAndAccountId($inputs['user_id'], $inputs['account_id']);
+        $user = $this->userValidator->getAndValidateUserAndAccountId($inputs['user_id'], $inputs['account_id']);
 
         try {
             $company = $this->service->createCompany($inputs);
@@ -86,6 +86,7 @@ class CompanyController extends Controller
             abort(Response::HTTP_NOT_ACCEPTABLE, 'Something went wrong, try again later!');
         }
 
+        $user->account->update(['company_settings_done' => 1]);
         // TODO return from transformer
         return response([
             'name' => $company->name,
