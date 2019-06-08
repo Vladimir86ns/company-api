@@ -6,6 +6,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Company;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -44,6 +45,14 @@ class User extends Authenticatable implements JWTSubject
     public function account()
     {
         return $this->hasOne('App\Account');
+    }
+
+    /**
+     * Get the companies for the blog post.
+     */
+    public function companies()
+    {
+        return $this->hasMany(Company::class);
     }
 
     /**

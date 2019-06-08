@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Company;
 
 class Account extends Model
 {
@@ -34,5 +35,13 @@ class Account extends Model
     public function user()
     {
         return $this->hasOne('App\User');
+    }
+
+    /**
+     * Get the companies for the blog post.
+     */
+    public function companies()
+    {
+        return $this->hasMany(Company::class, 'account_id');
     }
 }
