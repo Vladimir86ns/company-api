@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Transformers\Company\CompanyTransformer;
 use Illuminate\Http\Request;
 use App\Http\Requests\ValidateCreateCompany;
 use App\Validators\CompanyValidator;
@@ -32,20 +33,28 @@ class CompanyController extends Controller
     protected $validator;
 
     /**
+     * @var \App\Transformers\Company\CompanyTransformer
+     */
+    protected $transformer;
+
+    /**
      * CompanyController constructor.
      *
      * @param CompanyValidator $companyValidator
      * @param UserValidator    $userValidator
      * @param CompanyService   $companyService
+     * @param CompanyTransformer $companyTransformer
      */
     public function __construct(
         CompanyValidator $companyValidator,
         UserValidator $userValidator,
-        CompanyService $companyService
+        CompanyService $companyService,
+        CompanyTransformer $companyTransformer
     ) {
         $this->validator = $companyValidator;
         $this->userValidator = $userValidator;
         $this->service = $companyService;
+        $this->transformer = $companyTransformer;
     }
 
     /**
@@ -60,20 +69,16 @@ class CompanyController extends Controller
     {
         $company = $this->validator->getAndValidateCompanyAndAccountId($id, $accountId);
 
-        return response([
-            'name' => $company->name,
-            'address' => $company->address,
-            'country' => $company->country,
-            'city' => $company->city,
-            'phone_number' => $company->phone_number,
-            'mobile_phone' => $company->mobile_phone
-        ], Response::HTTP_OK);
+        return response($this->transformer->transform($company), Response::HTTP_OK);
     }
+
 
     /**
      * Create new company.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function create(Request $request)
     {
@@ -94,14 +99,7 @@ class CompanyController extends Controller
         }
 
         $user->account->update(['company_settings_done' => 1]);
-        // TODO return from transformer
-        return response([
-            'name' => $company->name,
-            'address' => $company->address,
-            'country' => $company->country,
-            'city' => $company->city,
-            'phone_number' => $company->phone_number,
-            'mobile_phone' => $company->mobile_phone
-        ], Response::HTTP_OK);
+
+        return response($this->transformer->transform($company), Response::HTTP_OK);
     }
 }

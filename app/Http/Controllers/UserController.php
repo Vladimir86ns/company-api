@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Transformers\User\UserTransformer;
 use Illuminate\Http\Request;
 use App\Http\Requests\ValidateUpdateUser;
 use App\Validators\UserValidator;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\User\UserService;
-use App\User;
 
 /**
  * Class UserController
@@ -27,20 +27,28 @@ class UserController extends Controller
     protected $validator;
 
     /**
+     * @var \App\Transformers\User\UserTransformer
+     */
+    protected $transformer;
+
+    /**
      * Create a new controller instance.
      *
      * @param UserValidator $userValidator
      * @param UserService $userService
+     * @param UserTransformer $userTransformer
+     *
      * @return void
      */
     public function __construct(
         UserValidator $userValidator,
-        UserService $userService
+        UserService $userService,
+        UserTransformer $userTransformer
     ) {
         $this->validator = $userValidator;
         $this->service = $userService;
+        $this->transformer = $userTransformer;
     }
-
 
     /**
      * Get user.
@@ -54,19 +62,10 @@ class UserController extends Controller
     {
         $user = $this->validator->getAndValidateUserAndAccountId($id, $accountId);
 
-        // TODO return from transformer
-        return response([
-            'email' => $user->email,
-            'first_name' => $user->userInfo->first_name,
-            'last_name' => $user->userInfo->last_name,
-            'country' => $user->userInfo->country,
-            'city' => $user->userInfo->city,
-            'address' => $user->userInfo->address,
-            'phone_number' => $user->userInfo->phone_number,
-            'mobile_phone' => $user->userInfo->mobile_phone,
-            'company_settings_done' => $user->account->company_settings_done,
-            'user_settings_done' => $user->account->user_settings_done,
-        ], Response::HTTP_OK);
+        return response(
+            $this->transformer->transform($user),
+            Response::HTTP_OK
+        );
     }
 
 
@@ -95,18 +94,9 @@ class UserController extends Controller
             abort(Response::HTTP_NOT_ACCEPTABLE, 'Something went wrong, try again later!');
         }
 
-        // TODO return from transformer
-        return response([
-            'email' => $user->email,
-            'first_name' => $user->userInfo->first_name,
-            'last_name' => $user->userInfo->last_name,
-            'country' => $user->userInfo->country,
-            'city' => $user->userInfo->city,
-            'address' => $user->userInfo->address,
-            'phone_number' => $user->userInfo->phone_number,
-            'mobile_phone' => $user->userInfo->mobile_phone,
-            'company_settings_done' => $user->account->company_settings_done,
-            'user_settings_done' => $user->account->user_settings_done,
-        ], Response::HTTP_OK);
+        return response(
+            $this->transformer->transform($user),
+            Response::HTTP_OK
+        );
     }
 }
