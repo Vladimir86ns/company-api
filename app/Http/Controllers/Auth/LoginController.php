@@ -46,7 +46,6 @@ class LoginController extends Controller
      */
     public function __construct(UserValidator $userValidator)
     {
-        // $this->middleware('guest')->except('logout');
         $this->validator = $userValidator;
     }
 
@@ -82,7 +81,8 @@ class LoginController extends Controller
                 'account_id' => $user->account->id,
                 'company_settings_done' => $user->account->company_settings_done,
                 'user_settings_done' => $user->account->user_settings_done,
-                'token' => JWTAuth::fromUser($user)
+                'token' => JWTAuth::fromUser($user),
+                'headquarter_company_id' => $user->account->headquarter_company_id,
             ], Response::HTTP_OK);
         }
 

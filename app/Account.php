@@ -16,7 +16,8 @@ class Account extends Model
         'user_id',
         'name',
         'company_settings_done',
-        'user_settings_done'
+        'user_settings_done',
+        'headquarter_company_id'
     ];
 
     /**

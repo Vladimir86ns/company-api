@@ -98,7 +98,9 @@ class CompanyController extends Controller
             abort(Response::HTTP_NOT_ACCEPTABLE, 'Something went wrong, try again later!');
         }
 
-        $user->account->update(['company_settings_done' => 1]);
+        if (!$user->account->company_settings_done) {
+            $user->account->update(['company_settings_done' => 1, 'headquarter_company_id' => $company->id]);
+        }
 
         return response($this->transformer->transform($company), Response::HTTP_OK);
     }

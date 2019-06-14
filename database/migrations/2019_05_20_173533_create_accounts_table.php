@@ -18,6 +18,7 @@ class CreateAccountsTable extends Migration
             $table->string('name');
             $table->boolean('company_settings_done')->default(false);
             $table->boolean('user_settings_done')->default(false);
+            $table->integer('headquarter_company_id')->nullable();
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

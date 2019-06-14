@@ -20,7 +20,7 @@ class UserTransformer extends TransformerAbstract
             'phone_number' => $user->userInfo->phone_number,
             'mobile_phone' => $user->userInfo->mobile_phone,
             'company_settings_done' => $user->account->company_settings_done,
-            'user_settings_done' => $user->account->user_settings_done,
+            'user_settings_done' => $user->account->user_settings_done
         ];
     }
 }

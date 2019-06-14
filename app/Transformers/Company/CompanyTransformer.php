@@ -11,6 +11,7 @@ class CompanyTransformer extends TransformerAbstract
     public function transform(Company $company)
     {
         return [
+            'id' => $company->id,
             'name' => $company->name,
             'address' => $company->address,
             'country' => $company->country,
