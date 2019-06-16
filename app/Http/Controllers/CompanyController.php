@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ValidateUpdateCompany;
 use App\Transformers\Company\CompanyTransformer;
 use Illuminate\Http\Request;
 use App\Http\Requests\ValidateCreateCompany;
@@ -83,7 +84,7 @@ class CompanyController extends Controller
     public function create(Request $request)
     {
         $inputs = $request->all();
-        $errors = $this->validator->userValidator($inputs, new ValidateCreateCompany($inputs));
+        $errors = $this->validator->companyValidate($inputs, new ValidateCreateCompany($inputs));
 
         if ($errors) {
             return response($errors, Response::HTTP_NOT_ACCEPTABLE);
@@ -100,6 +101,35 @@ class CompanyController extends Controller
 
         if (!$user->account->company_settings_done) {
             $user->account->update(['company_settings_done' => 1, 'headquarter_company_id' => $company->id]);
+        }
+
+        return response($this->transformer->transform($company), Response::HTTP_OK);
+    }
+
+
+    /**
+     * Update company.
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $inputs = $request->all();
+        $errors = $this->validator->companyValidate($inputs, new ValidateUpdateCompany());
+
+        if ($errors) {
+            return response($errors, Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $company = $this->validator->getAndValidateCompanyAndAccountId($inputs['company_id'], $inputs['account_id']);
+
+        try {
+            $company = $this->service->update($company, $inputs);
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            abort(Response::HTTP_NOT_ACCEPTABLE, 'Something went wrong, try again later!');
         }
 
         return response($this->transformer->transform($company), Response::HTTP_OK);
