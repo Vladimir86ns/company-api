@@ -54,7 +54,7 @@ class CompanyValidator
      * @param FormRequest $validator
      * @return mixed
      */
-    public function userValidator(array $data, FormRequest $validator)
+    public function companyValidate(array $data, FormRequest $validator)
     {
         return $this->validateData($data, $validator);
     }

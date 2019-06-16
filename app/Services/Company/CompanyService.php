@@ -33,4 +33,20 @@ class CompanyService
             return Company::create($attributes);
         });
     }
+
+    /**
+     * Update company.
+     *
+     * @param Company $company
+     * @param array   $attributes
+     *
+     * @return mixed
+     */
+    public function update(Company $company, array $attributes)
+    {
+        return DB::transaction(function () use ($company, $attributes) {
+            $company->update($attributes);
+            return $company;
+        });
+    }
 }
