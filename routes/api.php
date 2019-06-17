@@ -22,9 +22,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 $api->version('v1', function ($api) {
 
     $api->group(['namespace' => 'App\Http\Controllers'], function (Router $api) {
-        $api->group(['prefix' => 'user'], function ($api) {
+        $api->group(['prefix' => 'account'], function ($api) {
             $api->get('login', 'Auth\LoginController@login');
-            $api->post('create', 'Auth\RegisterController@createUser');
+            $api->post('create', 'Auth\RegisterController@createAccountAndUser');
         });
     });
 

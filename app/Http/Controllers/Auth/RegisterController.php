@@ -88,7 +88,7 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
-    protected function createUser(Request $request)
+    protected function createAccountAndUser(Request $request)
     {
         $inputs = $request->all();
         $errors = $this->validator->userValidator($inputs, new ValidateCreateUser());
