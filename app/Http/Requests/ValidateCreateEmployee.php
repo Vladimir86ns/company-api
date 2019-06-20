@@ -48,7 +48,14 @@ class ValidateCreateEmployee extends FormRequest
             'country' => 'required|max:100',
             'city' => 'required|max:100',
             'address' => 'required|min:3|max:100',
-            'employee_company_id' => 'required|min:3|max:100',
+            'employee_company_id' => [
+                'required',
+                'min:3',
+                'max:100',
+                Rule::unique('employees')->where(function ($query) {
+                    $query->where('employee_company_id', $this->attributes['employee_company_id']);
+                })
+            ],
             'hire_date' => 'required|date',
             'phone_number' => 'max:20',
             'mobile_phone' => 'max:20',
