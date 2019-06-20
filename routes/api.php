@@ -28,7 +28,6 @@ $api->version('v1', function ($api) {
         });
     });
 
-    // TODO for now will be commented for middleware
 //    $api->group(['namespace' => 'App\Http\Controllers', 'middleware' => 'jwt.verify'], function (Router $api) {
     $api->group(['namespace' => 'App\Http\Controllers'], function (Router $api) {
         // USER
@@ -42,6 +41,11 @@ $api->version('v1', function ($api) {
             $api->get('/{id}/{accountId}', 'CompanyController@getCompanyByIdAndAccountId');
             $api->post('create', 'CompanyController@create');
             $api->patch('update', 'CompanyController@update');
+        });
+
+        // EMPLOYEES
+        $api->group(['prefix' => 'employee'], function ($api) {
+            $api->post('create', 'EmployeeController@create');
         });
     });
 });

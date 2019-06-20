@@ -2,7 +2,6 @@
 
 namespace App\Transformers\Company;
 
-
 use App\Company;
 use League\Fractal\TransformerAbstract;
 

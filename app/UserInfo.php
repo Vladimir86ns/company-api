@@ -29,4 +29,12 @@ class UserInfo extends Model
     {
         return $this->hasOne('App\User');
     }
+
+    /**
+     * Get the employee record.
+     */
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
 }

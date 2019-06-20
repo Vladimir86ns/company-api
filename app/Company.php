@@ -3,8 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Account;
-use App\User;
 
 class Company extends Model
 {
@@ -31,5 +29,13 @@ class Company extends Model
     public function user()
     {
         return $this->hasOne(User::class);
+    }
+
+    /**
+     * Get the employees.
+     */
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
     }
 }
