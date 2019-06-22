@@ -159,9 +159,8 @@ class CompanyController extends Controller
     ) {
         $this->validator->getAndValidateCompanyAndAccountId($companyId, $accountId);
         $employees = $employeeService->getEmployeesByCompanyId($companyId);
-        $paginator = Employee::paginate(10);
         $resource = new Collection($employees, $employeeTransformer);
-        $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
+        $resource->setPaginator(new IlluminatePaginatorAdapter(Employee::paginate(10)));
 
         return $this->fractal->createData($resource)->toArray();
     }
