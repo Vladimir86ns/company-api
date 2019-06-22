@@ -53,6 +53,24 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Get employee by id and company id.
+     *
+     * @param $id
+     * @param $companyId
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function getEmployee($id, $companyId)
+    {
+        $employee = $this->validator->getAndValidateEmployeeIdAndCompanyId($id, $companyId);
+
+        return response(
+            $this->transformer->transform($employee),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * Create employee.
      *
      * @param Request $request

@@ -46,6 +46,7 @@ $api->version('v1', function ($api) {
         // EMPLOYEES
         $api->group(['prefix' => 'employee'], function ($api) {
             $api->post('create', 'EmployeeController@create');
+            $api->get('{id}/{companyId}', 'EmployeeController@getEmployee');
         });
     });
 });

@@ -24,4 +24,17 @@ class EmployeeService
             return $employee;
         });
     }
+
+    /**
+     * Get employee by id and company id.
+     *
+     * @param string $id
+     * @param string $companyID
+     *
+     * @return mixed
+     */
+    public function getEmployeeByIdAndCompanyId(string $id, string $companyID)
+    {
+        return Employee::where(['id' => $id, 'company_id' => $companyID])->first();
+    }
 }
