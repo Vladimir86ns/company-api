@@ -32,6 +32,6 @@ class Employee extends Model
      */
     public function userInfo()
     {
-        return $this->hasOne(UserInfo::class, 'id');
+        return $this->belongsTo(UserInfo::class);
     }
 }
