@@ -41,11 +41,13 @@ $api->version('v1', function ($api) {
             $api->get('/{id}/{accountId}', 'CompanyController@getCompanyByIdAndAccountId');
             $api->post('create', 'CompanyController@create');
             $api->patch('update', 'CompanyController@update');
+            $api->get('/{companyId}/account/{accountId}', 'CompanyController@getEmployeesByCompany');
         });
 
-        // EMPLOYEES
+        // EMPLOYEE
         $api->group(['prefix' => 'employee'], function ($api) {
             $api->post('create', 'EmployeeController@create');
+            $api->get('{id}/{companyId}', 'EmployeeController@getEmployee');
         });
     });
 });

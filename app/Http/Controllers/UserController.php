@@ -68,7 +68,6 @@ class UserController extends Controller
         );
     }
 
-
     /**
      * Update user.
      *

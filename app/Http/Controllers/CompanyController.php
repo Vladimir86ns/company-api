@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Employee;
 use App\Http\Requests\ValidateUpdateCompany;
+use App\Services\Employee\EmployeeService;
 use App\Transformers\Company\CompanyTransformer;
+use App\Transformers\Employee\EmployeeTransformer;
 use Illuminate\Http\Request;
 use App\Http\Requests\ValidateCreateCompany;
 use App\Validators\CompanyValidator;
 use App\Validators\UserValidator;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\Company\CompanyService;
+use League\Fractal\Manager as ManagerFractal;
+use League\Fractal\Resource\Collection;
 
-/**
- * Class CompanyController
- *
- * @package App\Http\Controllers
- */
 class CompanyController extends Controller
 {
     /**
@@ -39,6 +40,11 @@ class CompanyController extends Controller
     protected $transformer;
 
     /**
+     * @var ManagerFractal
+     */
+    protected $fractal;
+
+    /**
      * CompanyController constructor.
      *
      * @param CompanyValidator $companyValidator
@@ -50,12 +56,14 @@ class CompanyController extends Controller
         CompanyValidator $companyValidator,
         UserValidator $userValidator,
         CompanyService $companyService,
-        CompanyTransformer $companyTransformer
+        CompanyTransformer $companyTransformer,
+        ManagerFractal $managerFractal
     ) {
         $this->validator = $companyValidator;
         $this->userValidator = $userValidator;
         $this->service = $companyService;
         $this->transformer = $companyTransformer;
+        $this->fractal = $managerFractal;
     }
 
     /**
@@ -72,7 +80,6 @@ class CompanyController extends Controller
 
         return response($this->transformer->transform($company), Response::HTTP_OK);
     }
-
 
     /**
      * Create new company.
@@ -106,7 +113,6 @@ class CompanyController extends Controller
         return response($this->transformer->transform($company), Response::HTTP_OK);
     }
 
-
     /**
      * Update company.
      *
@@ -133,5 +139,30 @@ class CompanyController extends Controller
         }
 
         return response($this->transformer->transform($company), Response::HTTP_OK);
+    }
+
+    /**
+     * Get employees by company id and account id.
+     *
+     * @param string              $companyId
+     * @param string              $accountId
+     * @param EmployeeService     $employeeService
+     * @param EmployeeTransformer $employeeTransformer
+     *
+     * @return array
+     */
+    public function getEmployeesByCompany(
+        string $companyId,
+        string $accountId,
+        EmployeeService $employeeService,
+        EmployeeTransformer $employeeTransformer
+    ) {
+        $this->validator->getAndValidateCompanyAndAccountId($companyId, $accountId);
+        $employees = $employeeService->getEmployeesByCompanyId($companyId);
+        $paginator = Employee::paginate(10);
+        $resource = new Collection($employees, $employeeTransformer);
+        $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
+
+        return $this->fractal->createData($resource)->toArray();
     }
 }
