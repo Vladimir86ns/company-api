@@ -21,6 +21,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 $api->version('v1', function ($api) {
 
+    // THIS IS ONLY FOR DEV
+    $withMiddleware = ['namespace' => 'App\Http\Controllers', 'middleware' => 'jwt.verify'];
+    $withOutMiddleware = ['namespace' => 'App\Http\Controllers'];
+
+
     $api->group(['namespace' => 'App\Http\Controllers'], function (Router $api) {
         $api->group(['prefix' => 'account'], function ($api) {
             $api->get('login', 'Auth\LoginController@login');
@@ -28,8 +33,7 @@ $api->version('v1', function ($api) {
         });
     });
 
-//    $api->group(['namespace' => 'App\Http\Controllers', 'middleware' => 'jwt.verify'], function (Router $api) {
-    $api->group(['namespace' => 'App\Http\Controllers'], function (Router $api) {
+    $api->group($withOutMiddleware, function (Router $api) {
 
         // ACCOUNT    account/
         $api->group(['prefix' => 'account'], function ($api) {
