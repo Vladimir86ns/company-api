@@ -53,17 +53,17 @@ class UserController extends Controller
     /**
      * Get user.
      *
-     * @param string $id
+     * @param string $userId
      * @param string $accountId
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function getUser(string $id, string $accountId)
+    public function getUser(string $accountId, string $userId)
     {
-        $user = $this->validator->getAndValidateUserAndAccountId($id, $accountId);
+        $user = $this->validator->getAndValidateUserAndAccountId($userId, $accountId);
 
         return response(
-            $this->transformer->transform($user),
+            [ 'data' => $this->transformer->transform($user) ],
             Response::HTTP_OK
         );
     }
@@ -94,7 +94,7 @@ class UserController extends Controller
         }
 
         return response(
-            $this->transformer->transform($user),
+            [ 'data' => $this->transformer->transform($user)],
             Response::HTTP_OK
         );
     }

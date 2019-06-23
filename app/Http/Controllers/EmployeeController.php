@@ -64,10 +64,7 @@ class EmployeeController extends Controller
     {
         $employee = $this->validator->getAndValidateEmployeeIdAndCompanyId($id, $companyId);
 
-        return response(
-            $this->transformer->transform($employee),
-            Response::HTTP_OK
-        );
+        return response([ 'data' => $this->transformer->transform($employee)],Response::HTTP_OK);
     }
 
     /**
@@ -95,9 +92,6 @@ class EmployeeController extends Controller
             abort(Response::HTTP_NOT_ACCEPTABLE, 'Something went wrong, try again later!');
         }
 
-        return response(
-            $this->transformer->transform($employee),
-            Response::HTTP_OK
-        );
+        return response(['data' => $this->transformer->transform($employee)],Response::HTTP_OK);
     }
 }

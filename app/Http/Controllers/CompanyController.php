@@ -69,16 +69,16 @@ class CompanyController extends Controller
     /**
      * Get company by id and account id.
      *
-     * @param string $id
+     * @param string $companyId
      * @param string $accountId
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function getCompanyByIdAndAccountId(string $id, string $accountId)
+    public function getCompany(string $accountId, string $companyId)
     {
-        $company = $this->validator->getAndValidateCompanyAndAccountId($id, $accountId);
+        $company = $this->validator->getAndValidateCompanyAndAccountId($companyId, $accountId);
 
-        return response($this->transformer->transform($company), Response::HTTP_OK);
+        return response([ 'data' => $this->transformer->transform($company) ], Response::HTTP_OK);
     }
 
     /**
@@ -110,7 +110,7 @@ class CompanyController extends Controller
             $user->account->update(['company_settings_done' => 1, 'headquarter_company_id' => $company->id]);
         }
 
-        return response($this->transformer->transform($company), Response::HTTP_OK);
+        return response([ 'data' => $this->transformer->transform($company) ], Response::HTTP_OK);
     }
 
     /**
@@ -138,7 +138,7 @@ class CompanyController extends Controller
             abort(Response::HTTP_NOT_ACCEPTABLE, 'Something went wrong, try again later!');
         }
 
-        return response($this->transformer->transform($company), Response::HTTP_OK);
+        return response([ 'data' => $this->transformer->transform($company) ], Response::HTTP_OK);
     }
 
     /**

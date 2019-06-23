@@ -30,24 +30,49 @@ $api->version('v1', function ($api) {
 
 //    $api->group(['namespace' => 'App\Http\Controllers', 'middleware' => 'jwt.verify'], function (Router $api) {
     $api->group(['namespace' => 'App\Http\Controllers'], function (Router $api) {
-        // USER
-        $api->group(['prefix' => 'user'], function ($api) {
-            $api->get('/{id}/{accountId}', 'UserController@getUser');
-            $api->post('update', 'UserController@update');
-        });
 
-        // COMPANY
-        $api->group(['prefix' => 'company'], function ($api) {
-            $api->get('/{id}/{accountId}', 'CompanyController@getCompanyByIdAndAccountId');
-            $api->post('create', 'CompanyController@create');
-            $api->patch('update', 'CompanyController@update');
-            $api->get('/{companyId}/account/{accountId}', 'CompanyController@getEmployeesByCompany');
-        });
+        // ACCOUNT    account/
+        $api->group(['prefix' => 'account'], function ($api) {
 
-        // EMPLOYEE
-        $api->group(['prefix' => 'employee'], function ($api) {
-            $api->post('create', 'EmployeeController@create');
-            $api->get('{id}/{companyId}', 'EmployeeController@getEmployee');
+            // USER   account/user
+            $api->group(['prefix' => 'user'], function ($api) {
+                $api->post('update', 'UserController@update');
+            });
+
+            // COMPANY    account/company
+            $api->group(['prefix' => 'company'], function ($api) {
+                $api->post('create', 'CompanyController@create');
+                $api->patch('update', 'CompanyController@update');
+
+                // EMPLOYEE    account/company/employee
+                $api->group(['prefix' => 'employee'], function ($api) {
+                    $api->post('create', 'EmployeeController@create');
+                });
+            });
+
+            // ACCOUNT ID    account/{accountId}
+            $api->group(['prefix' => '/{accountId}'], function ($api) {
+
+                // USER    account/{accountId}/user
+                $api->group(['prefix' => '/user'], function ($api) {
+                    $api->get('{userId}', 'UserController@getUser');
+                });
+
+                // COMPANY    account/{accountId}/company
+                $api->group(['prefix' => 'company'], function ($api) {
+
+                    // COMPANY ID    account/{accountId}/company/{companyId}
+                    $api->group(['prefix' => '{companyId}'], function ($api) {
+                        $api->get('/', 'CompanyController@getCompany');
+                        $api->get('/employees', 'CompanyController@getEmployeesByCompany');
+
+                        // EMPLOYEE    account/{accountId}/company/{companyId}/employee
+                        $api->group(['prefix' => 'employee'], function ($api) {
+                            $api->get('{employeeId}', 'EmployeeController@getEmployee');
+                        });
+                    });
+                });
+            });
         });
     });
 });
