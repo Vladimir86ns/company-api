@@ -51,6 +51,7 @@ $api->version('v1', function ($api) {
                 // EMPLOYEE    account/company/employee
                 $api->group(['prefix' => 'employee'], function ($api) {
                     $api->post('create', 'EmployeeController@create');
+                    $api->patch('update', 'EmployeeController@update');
                 });
             });
 
@@ -73,6 +74,7 @@ $api->version('v1', function ($api) {
                         // EMPLOYEE    account/{accountId}/company/{companyId}/employee
                         $api->group(['prefix' => 'employee'], function ($api) {
                             $api->get('{employeeId}', 'EmployeeController@getEmployee');
+                            $api->delete('{employeeId}/delete', 'EmployeeController@delete');
                         });
                     });
                 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ValidateCreateEmployee;
+use App\Http\Requests\ValidateUpdateEmployee;
 use App\Services\Employee\EmployeeService;
 use App\Transformers\Employee\EmployeeTransformer;
 use App\Validators\CompanyValidator;
@@ -93,5 +94,52 @@ class EmployeeController extends Controller
         }
 
         return response(['data' => $this->transformer->transform($employee)],Response::HTTP_OK);
+    }
+
+    /**
+     * Update employee.
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $inputs = $request->all();
+        $errors = $this->validator->employeeValidator($inputs, new ValidateUpdateEmployee($inputs));
+
+        if ($errors) {
+            return response($errors, Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $this->companyValidator->getAndValidateCompanyAndAccountId($inputs['company_id'], $inputs['account_id']);
+        $employee = $this->validator->getAndValidateEmployeeIdAndCompanyId($inputs['id'], $inputs['company_id']);
+
+        try {
+            $employee = $this->service->updateEmployee($inputs, $employee);
+        } catch (\Exception $e) {
+            \Log::info($e->getMessage());
+            abort(Response::HTTP_NOT_ACCEPTABLE, 'Something went wrong, try again later!');
+        }
+
+        return response(['data' => $this->transformer->transform($employee)],Response::HTTP_OK);
+    }
+
+    /**
+     * Delete employee, with soft delete.
+     *
+     * @param $accountId
+     * @param $companyId
+     * @param $employeeId
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function delete($accountId, $companyId, $employeeId)
+    {
+        $this->companyValidator->getAndValidateCompanyAndAccountId($companyId, $accountId);
+        $employee = $this->validator->getAndValidateEmployeeIdAndCompanyId($employeeId, $companyId);
+        $employee->delete();
+
+        return response(['data' => []],Response::HTTP_OK);
     }
 }

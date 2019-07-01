@@ -5,6 +5,7 @@ namespace App\Services\Employee;
 
 use App\Employee;
 use App\UserInfo;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class EmployeeService
@@ -23,6 +24,25 @@ class EmployeeService
             $userInfo->employee()->create($attributes);
 
             return $userInfo->employee;
+        });
+    }
+
+    /**
+     * Update employee info and user info.
+     *
+     * @param array    $attributes
+     * @param Employee $employee
+     *
+     * @return mixed
+     */
+    public function updateEmployee(array $attributes, Employee $employee)
+    {
+        return DB::transaction(function () use ($attributes, $employee) {
+            $filtered = Arr::except($attributes, ['account_id', 'company_id', 'id']);
+            $employee->update($filtered);
+            $employee->userInfo()->update($filtered);
+
+            return $employee;
         });
     }
 
