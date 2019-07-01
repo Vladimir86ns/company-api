@@ -48,6 +48,6 @@ class EmployeeService
      */
     public function getEmployeesByCompanyId(string $companyID)
     {
-        return Employee::where('company_id', $companyID)->get();
+        return Employee::where('company_id', $companyID)->paginate(10);
     }
 }

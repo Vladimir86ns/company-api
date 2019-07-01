@@ -13,6 +13,7 @@ class EmployeeTransformer extends TransformerAbstract
             'id' => $employee->id,
             'first_name' => $employee->userInfo->first_name,
             'last_name' => $employee->userInfo->last_name,
+            'email' => $employee->email,
             'country' => $employee->userInfo->country,
             'city' => $employee->userInfo->city,
             'address' => $employee->userInfo->address,

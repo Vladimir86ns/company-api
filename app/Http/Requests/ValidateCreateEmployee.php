@@ -41,6 +41,7 @@ class ValidateCreateEmployee extends FormRequest
             'email' => [
                 'required',
                 'email',
+                'max:100',
                 Rule::unique('employees')->where(function ($query) {
                     $query->where('company_id', $this->attributes['company_id']);
                 })
