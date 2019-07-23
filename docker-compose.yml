@@ -1,0 +1,91 @@
+
+# version: "3"
+# services:
+#   company-api:
+#     build: .
+#     container_name: company-api
+#     working_dir: /company-api
+#     volumes:
+#       - .:/company-api
+#     ports:
+#       - "8000:8000"
+#     links:
+#       - mysql
+#     depends_on:
+#       - mysql
+#   mysql:
+#     image: mysql
+#     container_name: mysql
+#     environment:
+#       - MYSQL_DATABASE=blog
+#       - MYSQL_ROOT_PASSWORD=password
+#     ports:
+#       - "3306:3306"
+
+
+
+version: '3'
+services:
+
+  #PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: digitalocean.com/php
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    volumes:
+       - ./:/var/www
+       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - app-network
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+
+  #MySQL Service
+  db:
+    image: mysql:5.7.22
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: test123
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  dbdata:
+    driver: local
