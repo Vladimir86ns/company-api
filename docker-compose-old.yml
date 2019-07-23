@@ -1,0 +1,23 @@
+version: "3"
+services:
+  php_fpm:
+    build: .
+    container_name: company-api
+    working_dir: /company-api
+    ports:
+      - "8000:8000"
+    networks:
+      - blog
+  mysql:
+    image: mysql
+    container_name: db
+    networks:
+      - blog
+    environment:
+      - MYSQL_DATABASE=blog
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=blog
+      - MYSQL_PASSWORD=password
+networks:
+  blog:
+    driver: bridge
