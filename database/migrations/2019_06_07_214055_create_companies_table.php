@@ -36,6 +36,10 @@ class CreateCompaniesTable extends Migration
      */
     public function down()
     {
+        Schema::table('companies', function($table) {
+            $table->dropForeign(['account_id']);
+            $table->dropForeign(['user_id']);
+        });
         Schema::dropIfExists('companies');
     }
 }

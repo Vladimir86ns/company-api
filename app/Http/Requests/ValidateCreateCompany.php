@@ -26,6 +26,7 @@ class ValidateCreateCompany extends FormRequest
         return [
             'name' => 'required|unique:companies|max:100',
             'country' => 'required|max:100',
+            'city' => 'required|max:100',
             'address' => 'required|max:100',
             'phone_number' => 'required|max:100',
             'mobile_phone' => 'required|max:100',

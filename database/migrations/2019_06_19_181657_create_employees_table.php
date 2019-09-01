@@ -34,6 +34,10 @@ class CreateEmployeesTable extends Migration
      */
     public function down()
     {
+        Schema::table('employees', function($table) {
+            $table->dropForeign(['company_id']);
+            $table->dropForeign(['user_info_id']);
+        });
         Schema::dropIfExists('employees');
     }
 }

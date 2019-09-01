@@ -32,6 +32,9 @@ class CreateAccountsTable extends Migration
      */
     public function down()
     {
+        Schema::table('accounts', function($table) {
+            $table->dropForeign(['user_id']);
+        });
         Schema::dropIfExists('accounts');
     }
 }
