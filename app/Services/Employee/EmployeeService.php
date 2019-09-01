@@ -89,21 +89,18 @@ class EmployeeService
 
         $company = Company::where('id', $companyID)->first();
 
-        $utilsService = new UtilsService();
-        $companyShortName = $utilsService->getFirstCharactersOfEachWord($company->name);
-
         return $this->getId(
             $existingIds,
-            $companyShortName,
-            count($existingIds) + 1,
-            $utilsService);
+            $company->employee_id_prefix,
+            count($existingIds) + 1
+        );
     }
 
     /**
      * Prepare id and check does exist.
      *
      * @param array        $existingIds
-     * @param string       $companyShortName
+     * @param mix       $companyShortName
      * @param int          $countIds
      * @param UtilsService $utilsService
      *
@@ -111,18 +108,22 @@ class EmployeeService
      */
     public function getId(
         array $existingIds,
-        string $companyShortName,
-        int $countIds,
-        UtilsService $utilsService
+        $companyShortName,
+        int $countIds
     ) {
-        $testId = $utilsService->getPreparedID($countIds, $companyShortName);
+        $utilsService = new UtilsService();
+
+        if ($companyShortName) {
+            $testId = $utilsService->getPreparedID($countIds, $companyShortName . '-');
+        } else {
+            $testId = $utilsService->getPreparedID($countIds, '');
+        }
 
         if (in_array($testId, $existingIds)) {
             $testId = $this->getId(
                 $existingIds,
                 $companyShortName,
-                $countIds + 1,
-                $utilsService
+                $countIds + 1
             );
         }
 

@@ -16,7 +16,8 @@ class CompanyTransformer extends TransformerAbstract
             'country' => $company->country,
             'city' => $company->city,
             'phone_number' => $company->phone_number,
-            'mobile_phone' => $company->mobile_phone
+            'mobile_phone' => $company->mobile_phone,
+            'employee_id_prefix' => $company->employee_id_prefix
         ];
     }
 }

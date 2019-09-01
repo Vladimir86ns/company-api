@@ -21,6 +21,7 @@ class CreateCompaniesTable extends Migration
             $table->string('address')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('mobile_phone')->nullable();
+            $table->string('employee_id_prefix')->nullable();
             $table->bigInteger('account_id')->unsigned()->nullable();
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

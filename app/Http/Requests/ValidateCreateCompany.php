@@ -31,7 +31,8 @@ class ValidateCreateCompany extends FormRequest
             'phone_number' => 'required|max:100',
             'mobile_phone' => 'required|max:100',
             'user_id' => 'required|integer',
-            'account_id' => 'required|integer'
+            'account_id' => 'required|integer',
+            'employee_id_prefix' => 'max:30',
         ];
     }
 }
