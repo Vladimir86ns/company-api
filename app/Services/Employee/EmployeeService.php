@@ -3,7 +3,9 @@
 namespace App\Services\Employee;
 
 
+use App\Company;
 use App\Employee;
+use App\Services\Utils\UtilsService;
 use App\UserInfo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -69,5 +71,61 @@ class EmployeeService
     public function getEmployeesByCompanyId(string $companyID)
     {
         return Employee::where('company_id', $companyID)->paginate(10);
+    }
+
+    /**
+     * Get recommended id for create employee.
+     *
+     * @param int $companyID
+     *
+     * @return mixed
+     */
+    public function getRecommendedID(int $companyID)
+    {
+        $existingIds = Employee::where('company_id', $companyID)
+            ->withTrashed()
+            ->pluck('employee_company_id')
+            ->toArray();
+
+        $company = Company::where('id', $companyID)->first();
+
+        $utilsService = new UtilsService();
+        $companyShortName = $utilsService->getFirstCharactersOfEachWord($company->name);
+
+        return $this->getId(
+            $existingIds,
+            $companyShortName,
+            count($existingIds) + 1,
+            $utilsService);
+    }
+
+    /**
+     * Prepare id and check does exist.
+     *
+     * @param array        $existingIds
+     * @param string       $companyShortName
+     * @param int          $countIds
+     * @param UtilsService $utilsService
+     *
+     * @return string
+     */
+    public function getId(
+        array $existingIds,
+        string $companyShortName,
+        int $countIds,
+        UtilsService $utilsService
+    ) {
+        $testId = $utilsService->getPreparedID($countIds, $companyShortName);
+
+        if (in_array($testId, $existingIds)) {
+            $testId = $this->getId(
+                $existingIds,
+                $companyShortName,
+                $countIds + 1,
+                $utilsService
+            );
+        }
+
+        return $testId;
     }
 }

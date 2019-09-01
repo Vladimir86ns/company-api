@@ -48,6 +48,15 @@ $api->version('v1', function ($api) {
                 $api->post('create', 'CompanyController@create');
                 $api->patch('update', 'CompanyController@update');
 
+                // COMPANY    account/company/{companyId}
+                $api->group(['prefix' => '{companyId}'], function ($api) {
+
+                    // EMPLOYEE    account/company/{companyId}/employee
+                    $api->group(['prefix' => 'employee'], function ($api) {
+                        $api->get('get_recommended_id', 'EmployeeController@getRecommendedID');
+                    });
+                });
+
                 // EMPLOYEE    account/company/employee
                 $api->group(['prefix' => 'employee'], function ($api) {
                     $api->post('create', 'EmployeeController@create');

@@ -142,4 +142,18 @@ class EmployeeController extends Controller
 
         return response(['data' => []],Response::HTTP_OK);
     }
+
+
+    /**
+     * Get recommended employee id on create new employee.
+     *
+     * @param $companyId
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function getRecommendedID($companyId)
+    {
+        $id = $this->service->getRecommendedID($companyId);
+        return response(['data' => ['employee_id' => $id]], Response::HTTP_OK);
+    }
 }
