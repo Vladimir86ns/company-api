@@ -154,6 +154,6 @@ class EmployeeController extends Controller
     public function getRecommendedID($companyId)
     {
         $id = $this->service->getRecommendedID($companyId);
-        return response(['data' => ['employee_id' => $id]], Response::HTTP_OK);
+        return response(['data' => ['employee_company_id' => $id]], Response::HTTP_OK);
     }
 }
